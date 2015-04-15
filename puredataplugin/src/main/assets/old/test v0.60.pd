@@ -1,0 +1,63 @@
+#N canvas 0 50 1366 686 10;
+#X msg 373 210 bang;
+#X obj 243 299 bonk~;
+#X msg 385 30 learn 1;
+#X msg 385 90 learn 0;
+#X msg 373 270 print;
+#X obj 95 87 adc~;
+#X msg 385 60 learn 10;
+#X msg 385 120 forget;
+#X msg 385 150 write templates.txt;
+#X msg 349 -30 mask 4 0.7;
+#X msg 373 240 debug 0;
+#X obj 270 375 s bonk-cooked;
+#X obj 99 246 dac~;
+#X msg 385 180 read templates.txt;
+#X obj 561 27 bng 15 250 50 0 empty learnOn learnOn 17 7 0 10 -262144
+-1 -1;
+#X obj 561 62 bng 15 250 50 0 empty learnOff learnOff 17 7 0 10 -262144
+-1 -1;
+#X obj 561 97 bng 15 250 50 0 empty forgetTemplate forgetTemplate 17
+7 0 10 -262144 -1 -1;
+#X obj 561 132 bng 15 250 50 0 empty writeTemplates writeTemplates
+17 7 0 10 -262144 -1 -1;
+#X obj 562 168 bng 15 250 50 0 empty readTemplates readTemplates 17
+7 0 10 -262144 -1 -1;
+#X msg 803 -24 \; pd dsp 0 \;;
+#X obj 739 -77 bng 15 250 50 0 empty on on 17 7 0 10 -262144 -1 -1
+;
+#X obj 741 -14 bng 15 250 50 0 empty off off 17 7 0 10 -262144 -1 -1
+;
+#X msg 805 -78 \; pd dsp 1 \;;
+#X obj 340 336 print cooked;
+#X obj 197 -64 loadbang;
+#X obj 171 147 lop~ 100;
+#X msg 349 -90 thresh 6 200;
+#X msg 349 0 debounce 0;
+#X msg 350 -60 minvel 15;
+#X connect 0 0 1 0;
+#X connect 1 1 11 0;
+#X connect 1 1 23 0;
+#X connect 2 0 1 0;
+#X connect 3 0 1 0;
+#X connect 4 0 1 0;
+#X connect 5 0 25 0;
+#X connect 5 1 25 0;
+#X connect 6 0 1 0;
+#X connect 7 0 1 0;
+#X connect 8 0 1 0;
+#X connect 9 0 1 0;
+#X connect 10 0 1 0;
+#X connect 13 0 1 0;
+#X connect 14 0 6 0;
+#X connect 15 0 3 0;
+#X connect 16 0 7 0;
+#X connect 17 0 8 0;
+#X connect 18 0 13 0;
+#X connect 20 0 22 0;
+#X connect 21 0 19 0;
+#X connect 24 0 28 0;
+#X connect 25 0 1 0;
+#X connect 26 0 1 0;
+#X connect 27 0 1 0;
+#X connect 28 0 1 0;
