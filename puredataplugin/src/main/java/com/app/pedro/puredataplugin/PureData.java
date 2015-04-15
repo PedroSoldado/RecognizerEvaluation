@@ -318,7 +318,8 @@ public class PureData {
         String result;
 
         switch(template){
-            case 0: result = "TAP"; break;
+            case 0: result = "TAP";
+                break;
             case 1: result = "KNOCK"; break;
             case 2: result = "SLAP"; break;
             case 3: result = "PUNCH"; break;
