@@ -252,9 +252,9 @@ public class PureData {
         touches.add(touch);
     }
 
-    public void addHit(float instrument, float velocity, float color) {
+    public void addHit(float instrument, float velocity, float color, float intensity) {
 
-        Hit hit = new Hit(instrument,velocity,color);
+        Hit hit = new Hit(instrument,velocity,color, intensity);
 
         if(hits.size() > 9)
             hits.clear();

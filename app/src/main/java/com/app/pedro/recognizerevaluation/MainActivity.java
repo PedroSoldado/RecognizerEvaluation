@@ -30,8 +30,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final List<String> log = new ArrayList<>();
-        final String logString = "";
 
         pd = new PureData(getApplicationContext());
         boolean bound = pd.startService();
@@ -40,11 +38,12 @@ public class MainActivity extends Activity {
         initButtons(pd);
 
         final TextView loggerView = (TextView) findViewById(R.id.textView);
+        final EditText counterBox = (EditText) findViewById(R.id.learnCounter);
+
         loggerView.setMovementMethod(new ScrollingMovementMethod());
 
         final TextView resultLabel = (TextView) findViewById(R.id.resultText);
 
-        //pd.getMyDispatcher().addListener("bonk-cooked", new PdPluginListener());
         pd.getMyDispatcher().addListener("bonk-cooked", new PdListener.Adapter() {
             @Override
             public void receiveList(String source, Object... objects) {
@@ -54,12 +53,21 @@ public class MainActivity extends Activity {
                 float velocity = Float.parseFloat(objects[1].toString());
                 float colorTemperature = Float.parseFloat(objects[2].toString());
 
-                pd.addHit(template, velocity, colorTemperature);
+                //Intensity
+                float hitIntensity = Float.parseFloat(objects[3].toString());
+
+
+                pd.addHit(template, velocity, colorTemperature, hitIntensity);
 
                 result = getResult(template, velocity);
-                bonkOutput = source + " " + template + " " + velocity + " " + colorTemperature + "\n";
+                bonkOutput = source + "\t\t" + template + "\t\t" + velocity + "\t\t" + hitIntensity + "\n";
 
                 if (pd.detectHit() != null) {
+
+                    if(Integer.parseInt(counterBox.getText().toString()) < 10) {
+                        counterBox.setText(""+(Integer.parseInt(counterBox.getText().toString()) + 1));
+                    }
+                    else counterBox.setText("1");
 
                     loggerView.setText(loggerView.getText() + bonkOutput);
                     resultLabel.setText(result);
@@ -139,7 +147,7 @@ public class MainActivity extends Activity {
 
     public void initButtons(final PureData pd){
 
-        final Button buttonHigh = (Button) findViewById(R.id.highButton);
+        /*final Button buttonHigh = (Button) findViewById(R.id.highButton);
         final EditText hpValue = (EditText) findViewById(R.id.hpNumber);
 
         buttonHigh.setOnClickListener(new View.OnClickListener() {
@@ -157,7 +165,7 @@ public class MainActivity extends Activity {
                 pd.sendFloat("highpass", lpValue.getText().toString());
                 Log.e("Click", "bang: off!");
             }
-        });
+        });*/
 
         final Button buttonOff = (Button) findViewById(R.id.buttonOff);
         buttonOff.setOnClickListener(new View.OnClickListener() {
@@ -216,6 +224,16 @@ public class MainActivity extends Activity {
                 Log.e("Click", "read!");
             }
         });
+
+        final Button buttonIntensity = (Button) findViewById(R.id.intensityActivity);
+        buttonIntensity.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), IntensityActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     private String getResult(int template, float  velocity) {

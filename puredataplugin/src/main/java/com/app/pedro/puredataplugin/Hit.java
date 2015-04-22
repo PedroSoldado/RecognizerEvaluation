@@ -7,15 +7,20 @@ package com.app.pedro.puredataplugin;
 public class Hit {
 
     private int template;
-    private float intensity;
+    private float velocity;
     private float colorTemperature;
+
+    private float intensity;
+
     private long timestamp;
 
-    protected Hit(float instrument, float vel, float colorTemp) {
+    protected Hit(float instrument, float vel, float colorTemp, float intens) {
 
         template = (int) instrument;
-        intensity = vel;
+        velocity = vel;
         colorTemperature = colorTemp;
+
+        intensity = intens;
 
         timestamp = System.currentTimeMillis();
         //timestamp = time;
@@ -26,8 +31,8 @@ public class Hit {
         return template;
     }
 
-    public float getIntensity() {
-        return intensity;
+    public float getVelocity() {
+        return velocity;
     }
 
     public float getColorTemperature() {

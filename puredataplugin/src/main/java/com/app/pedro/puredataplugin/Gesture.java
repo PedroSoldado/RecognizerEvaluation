@@ -10,14 +10,10 @@ public class Gesture {
     private Touch touch;
     private Hit hit;
 
-    private int template;
-    private float intensity;
-    private float colorTemperature;
-
-    protected Gesture(int x, int y, float instrument, float vel, float colorTemp) {
+    protected Gesture(int x, int y, float instrument, float vel, float colorTemp, float intensity) {
 
         touch = new Touch(x, y);
-        hit = new Hit(instrument,vel,colorTemp);
+        hit = new Hit(instrument,vel,colorTemp, intensity);
 
     }
 
