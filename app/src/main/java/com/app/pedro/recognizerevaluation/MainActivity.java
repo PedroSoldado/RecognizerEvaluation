@@ -13,17 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.app.pedro.puredataplugin.PdPluginListener;
 import com.app.pedro.puredataplugin.PureData;
+import com.app.pedro.puredataplugin.PureDataRecognizer;
 
 import org.puredata.core.PdListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends Activity {
 
     PureData pd;
+    PureDataRecognizer recognizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +29,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
 
+        recognizer = new PureDataRecognizer(getApplicationContext());
         pd = new PureData(getApplicationContext());
-        boolean bound = pd.startService();
+        //boolean bound = pd.startService();
 
 
         initButtons(pd);
@@ -59,7 +58,7 @@ public class MainActivity extends Activity {
 
                 pd.addHit(template, velocity, colorTemperature, hitIntensity);
 
-                result = getResult(template, velocity);
+                result = pd.getResult(template, velocity);
                 bonkOutput = source + "\t\t" + template + "\t\t" + velocity + "\t\t" + hitIntensity + "\n";
 
                 if (pd.detectHit() != null) {
@@ -172,7 +171,6 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 pd.sendBang("off");
                 //Log.e("Click", "bang: off!");
-                pd.debugTouchList();
             }
         });
 
@@ -181,14 +179,13 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 pd.sendBang("on");
                 Log.e("Click", "bang: on!");
-                pd.debugHitList();
             }
         });
 
         final Button buttonLearn = (Button) findViewById(R.id.learnButton);
         buttonLearn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                pd.startLearning("learnOn");
+                pd.startLearning();
                 Log.e("Click", "learn mode!");
             }
         });
@@ -196,7 +193,7 @@ public class MainActivity extends Activity {
         final Button buttonLearnOff = (Button) findViewById(R.id.learnOffButton);
         buttonLearnOff.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                pd.stopLearning("learnOff");
+                pd.stopLearning();
                 Log.e("Click", "learn mode OFF!");
             }
         });
@@ -204,7 +201,7 @@ public class MainActivity extends Activity {
         final Button buttonForget = (Button) findViewById(R.id.forgetButton);
         buttonForget.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                pd.forgetTemplate("forgetTemplate");
+                pd.forgetTemplate();
                 Log.e("Click", "forget!");
             }
         });
@@ -212,7 +209,7 @@ public class MainActivity extends Activity {
         final Button buttonWrite = (Button) findViewById(R.id.writeButton);
         buttonWrite.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                pd.writeTemplates("writeTemplates");
+                pd.writeTemplates();
                 Log.e("Click", "write!");
             }
         });
@@ -220,7 +217,7 @@ public class MainActivity extends Activity {
         final Button buttonRead = (Button) findViewById(R.id.readButton);
         buttonRead.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                pd.readTemplates("readTemplates");
+                pd.readTemplates();
                 Log.e("Click", "read!");
             }
         });

@@ -4,6 +4,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 
 public class IntensityActivity extends ActionBarActivity {
@@ -12,6 +14,16 @@ public class IntensityActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intensity);
+
+
+        Button intensityTrain = (Button) findViewById(R.id.intensityButton);
+        intensityTrain.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                //recognizer.trainIntensity();
+                trainIntensity();
+            }
+        });
     }
 
 
@@ -35,5 +47,19 @@ public class IntensityActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void trainIntensity(){
+
+        //int nTemplates = recognizer.getTemplates();
+        int nTemplates = 2;
+        float[] samples = new float[5];
+
+        for(int template = 0; template < nTemplates; template++){
+
+
+
+
+        }
     }
 }

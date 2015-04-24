@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -28,14 +29,14 @@ import java.util.List;
  */
 public class PureData {
 
-    private enum TouchType {
-        TAP, KNOCK, SLAP, PUNCH, NOTRECOGNIZED
-    }
-
     private List<Hit> hits;
-
     //Need to have a list?? -> Only a single object
     private List<Touch> touches;
+    //Map the template to a list of 3 floats - 3 levels of intensity (weak, medium, strong)
+    private HashMap<Integer, List<Float>> intensityMap;
+    private boolean learning;
+
+
     private InputStream stream;
     private Context appContext;
     private int handlePatch;
@@ -43,7 +44,6 @@ public class PureData {
     private File saveFile;
     private PdDispatcher myDispatcher;
     private ServiceConnection pdConnection;
-    private PdListener bonkListener;
 
 
     public PureData(Context c) {
@@ -56,11 +56,15 @@ public class PureData {
 
             hits = new ArrayList<>();
             touches = new ArrayList<>();
+            learning = false;
+
             handlePatch = 0;
             pdService = null;
             stream = c.getResources().getAssets().open("test.zip");
             appContext = c;
             saveFile = c.getFilesDir();
+
+            startService();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,30 +103,6 @@ public class PureData {
     public void initPd() {
 
         PdBase.setReceiver(myDispatcher);
-        //myDispatcher.addListener("GUI", new PDListener());
-        //myDispatcher.addListener("bonk-cooked", new PDListener());
-        /*myDispatcher.addListener("bonk-cooked", new PdListener.Adapter() {
-            @Override
-            public void receiveList(String source, Object... objects) {
-                String result, bonkOutput;
-
-                int template = (int) Double.parseDouble(objects[0].toString());
-                float velocity = Float.parseFloat(objects[1].toString());
-                float colorTemperature = Float.parseFloat(objects[2].toString());
-
-                addHit(template,velocity, colorTemperature);
-
-                if(detectHit() != null){
-
-                    //output.add(bonkOutput);
-
-                    //sb.append(source + " " + template + " " + velocity + " " + colorTemperature + "\n");
-                    //logTextView.setText(sb.toString());
-                }
-
-                //resultLabel.setText("IDLE");
-            }
-        });*/
         startAudio();
 
     }
@@ -186,40 +166,6 @@ public class PureData {
 
     }
 
-
-
-
-    public void sendFloat(String receiver, String number) {
-        float value = Float.parseFloat(number);
-        PdBase.sendFloat(receiver, value);
-    }
-
-    public void sendBang(String receiver){
-
-        Log.e("BANG", receiver);
-        PdBase.sendBang(receiver);
-    }
-
-    public void writeTemplates(String receiver) {
-        sendBang(receiver);
-    }
-
-    public void startLearning(String receiver){
-        sendBang(receiver);
-    }
-
-    public void stopLearning(String receiver){
-        sendBang(receiver);
-    }
-
-    public void forgetTemplate(String receiver){
-        sendBang(receiver);
-    }
-
-    public void readTemplates(String receiver) {
-        sendBang(receiver);
-    }
-
     public void shutDown() {
         stopAudio();
 
@@ -239,6 +185,42 @@ public class PureData {
             pdService = null;
         }
     }
+
+
+    public void sendFloat(String receiver, String number) {
+        float value = Float.parseFloat(number);
+        PdBase.sendFloat(receiver, value);
+    }
+
+    public void sendBang(String receiver){
+
+        Log.e("BANG", receiver);
+        PdBase.sendBang(receiver);
+    }
+
+    public void writeTemplates() {
+        sendBang("writeTemplates");
+    }
+
+    public void startLearning(){
+        sendBang("learnOn");
+        learning = true;
+    }
+
+    public void stopLearning(){
+        sendBang("learnOff");
+        learning = false;
+    }
+
+    public void forgetTemplate(){
+        sendBang("forgetTemplate");
+    }
+
+    public void readTemplates() {
+        sendBang("readTemplates");
+    }
+
+
 
     public String debugLog(String logLine) {
 
@@ -281,8 +263,6 @@ public class PureData {
         long touchTs = t.getTimestamp();
         long hitTs = h.getTimestamp();
 
-
-        //if(t.getTimestamp() == h.getTimestamp() + 200) {
         if(hitTs <= touchTs + 200 && hitTs >= touchTs ){
 
             Log.e("Detected Hit!", "At " + hitTs + " " + touchTs);
@@ -291,9 +271,6 @@ public class PureData {
         }
 
         return null;
-
-
-
 
     }
 
@@ -329,6 +306,10 @@ public class PureData {
         result += " " + velocity;
 
         return result;
+    }
+
+    public boolean isLearning() {
+        return learning;
     }
 
     public PdDispatcher getMyDispatcher(){
