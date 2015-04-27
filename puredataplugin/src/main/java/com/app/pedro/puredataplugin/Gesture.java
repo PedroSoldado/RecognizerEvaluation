@@ -23,4 +23,8 @@ public class Gesture {
         hit = h;
 
     }
+
+    public float getIntensity() {
+        return hit.getVelocity();
+    }
 }

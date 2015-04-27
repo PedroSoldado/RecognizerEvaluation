@@ -121,7 +121,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Learn Mode On"
-                            android:id="@+id/learnButton" />
+                            android:id="@+id/learnOnButton" />
                     </LinearLayout>
 
                     <EditText

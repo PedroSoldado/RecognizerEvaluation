@@ -29,6 +29,7 @@ import java.util.List;
  */
 public class PureData {
 
+    public static PureData pdInstance;
     private List<Hit> hits;
     //Need to have a list?? -> Only a single object
     private List<Touch> touches;
@@ -65,6 +66,8 @@ public class PureData {
             saveFile = c.getFilesDir();
 
             startService();
+
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -249,13 +252,12 @@ public class PureData {
 
         Gesture gesture;
 
-        Log.e("TOUCHES", "" + (touches.size()-1));
-        Log.e("HITS", "" + (hits.size()-1));
+        //Log.e("TOUCHES", "" + (touches.size()-1));
+        //Log.e("HITS", "" + (hits.size()-1));
 
         if(touches.isEmpty()) {
             return null;
         }
-
 
         Touch t = touches.remove(touches.size() - 1);
         Hit h = hits.remove(hits.size()-1);

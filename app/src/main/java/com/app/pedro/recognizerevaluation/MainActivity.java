@@ -20,7 +20,7 @@ import org.puredata.core.PdListener;
 
 public class MainActivity extends Activity {
 
-    PureData pd;
+    public static PureData pd;
     PureDataRecognizer recognizer;
 
     @Override
@@ -37,10 +37,8 @@ public class MainActivity extends Activity {
         initButtons(pd);
 
         final TextView loggerView = (TextView) findViewById(R.id.textView);
-        final EditText counterBox = (EditText) findViewById(R.id.learnCounter);
-
         loggerView.setMovementMethod(new ScrollingMovementMethod());
-
+        final EditText counterBox = (EditText) findViewById(R.id.learnCounter);
         final TextView resultLabel = (TextView) findViewById(R.id.resultText);
 
         pd.getMyDispatcher().addListener("bonk-cooked", new PdListener.Adapter() {
@@ -182,7 +180,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button buttonLearn = (Button) findViewById(R.id.learnButton);
+        final Button buttonLearn = (Button) findViewById(R.id.learnOnButton);
         buttonLearn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 pd.startLearning();
@@ -225,6 +223,7 @@ public class MainActivity extends Activity {
         final Button buttonIntensity = (Button) findViewById(R.id.intensityActivity);
         buttonIntensity.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                //pd.shutDown();
                 Intent intent = new Intent(getApplicationContext(), IntensityActivity.class);
                 startActivity(intent);
             }

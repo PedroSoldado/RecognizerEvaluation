@@ -39,7 +39,9 @@
 
                 <TableRow
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical"
+                    android:id="@+id/headerRow">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -51,13 +53,62 @@
 
                 <TableRow
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
+                    android:layout_height="fill_parent"
+                    android:id="@+id/t0row"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="0"
+                        android:id="@+id/template0"
+                        android:padding="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Medium Text"
+                        android:id="@+id/t0_weak"
+                        android:padding="5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Medium Text"
+                        android:id="@+id/t0_medium"
+                        android:padding="5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Medium Text"
+                        android:id="@+id/t0_strong"
+                        android:padding="5dp" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Train"
+                        android:id="@+id/buttonT0"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical"
+                    android:id="@+id/t1row">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="1"
                         android:id="@+id/template1"
                         android:padding="20dp" />
 
@@ -84,43 +135,14 @@
                         android:text="Medium Text"
                         android:id="@+id/t1_strong"
                         android:padding="5dp" />
-                </TableRow>
 
-                <TableRow
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-
-                    <TextView
+                    <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="1"
-                        android:id="@+id/template2"
-                        android:padding="20dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Medium Text"
-                        android:id="@+id/t2_weak"
-                        android:padding="5dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Medium Text"
-                        android:id="@+id/t2_medium"
-                        android:padding="5dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Medium Text"
-                        android:id="@+id/t2_strong"
-                        android:padding="5dp" />
+                        android:text="Train"
+                        android:id="@+id/buttonT1"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center" />
                 </TableRow>
             </TableLayout>
         </LinearLayout>
