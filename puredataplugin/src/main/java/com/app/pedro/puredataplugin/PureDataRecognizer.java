@@ -127,5 +127,39 @@ public class PureDataRecognizer {
         return result;
     }
 
+    private HashMap getIntensityMap(){
+        return intensityMap;
+    }
+
+    public String compareIntensity(int template, float value){
+
+        //List<Float> intensities = intensityMap.get(template);
+        List<Float> intensities = new ArrayList<>();
+        intensities.add(20.25f);
+        intensities.add(40.249f);
+        intensities.add(100.89f);
+
+        float weak = intensities.get(0);
+        float medium = intensities.get(1);
+        float strong = intensities.get(2);
+
+        float distanceWeak = Math.abs(weak - value);
+        float distanceMedium = Math.abs(medium - value);
+        float distanceStrong = Math.abs(strong - value);
+
+        float smaller = Math.min(distanceWeak, Math.min(distanceMedium,distanceStrong));
+
+        if(smaller == distanceWeak){
+            return "Weak";
+        }
+        else if(smaller == distanceMedium){
+            return "Medium";
+        }
+        else return "Strong";
+
+
+
+    }
+
 
 }
