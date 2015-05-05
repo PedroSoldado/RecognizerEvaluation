@@ -18,6 +18,18 @@ import com.app.pedro.puredataplugin.PureDataRecognizer;
 
 import org.puredata.core.PdListener;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends Activity {
 
     public static PureData pd;
@@ -61,10 +73,9 @@ public class MainActivity extends Activity {
 
                 if (pd.detectHit() != null) {
 
-                    if(Integer.parseInt(counterBox.getText().toString()) < 10) {
-                        counterBox.setText(""+(Integer.parseInt(counterBox.getText().toString()) + 1));
-                    }
-                    else counterBox.setText("1");
+                    if (Integer.parseInt(counterBox.getText().toString()) < 10) {
+                        counterBox.setText("" + (Integer.parseInt(counterBox.getText().toString()) + 1));
+                    } else counterBox.setText("1");
 
                     loggerView.setText(loggerView.getText() + bonkOutput);
                     resultLabel.setText(result);
@@ -209,6 +220,9 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 pd.writeTemplates();
                 Log.e("Click", "write!");
+
+                exportFile();
+
             }
         });
 
@@ -232,21 +246,35 @@ public class MainActivity extends Activity {
 
     }
 
-    private String getResult(int template, float  velocity) {
 
-        String result;
+    private void exportFile() {
 
-        switch(template){
-            case 0: result = "TAP"; break;
-            case 1: result = "KNOCK"; break;
-            case 2: result = "SLAP"; break;
-            case 3: result = "PUNCH"; break;
-            default: result = "NOT RECOGNIZED";
+        File dir = getFilesDir();
+        File file = new File(dir, "templates.txt");
+
+        File root = android.os.Environment.getExternalStorageDirectory();
+        File dirOut = new File(root.getAbsolutePath() + "/results");
+        dir.mkdirs();
+        File fileOut = new File(dirOut, "templates.txt");
+
+        try {
+            InputStream in = new FileInputStream(file);
+            OutputStream out = new FileOutputStream(fileOut);
+
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        result += " " + velocity;
-
-        return result;
     }
 
 }

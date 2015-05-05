@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -45,7 +46,14 @@ public class IntensityActivity extends ActionBarActivity {
         training = false;
         gestureList = new ArrayList<>();
 
+        //buildTrainer(recognizer.templatesNumber);
+/*        LayoutInflater li = LayoutInflater.from(this);
+        TableRow tr = (TableRow) li.inflate(R.layout.intensitytablerow, null );
 
+        TableLayout t = (TableLayout) findViewById(R.id.table);
+        t.addView(tr);*/
+
+        buildTrainer(4);
         View.OnClickListener clickListener = new View.OnClickListener() {
 
             @Override
@@ -72,6 +80,7 @@ public class IntensityActivity extends ActionBarActivity {
 
             }
         };
+
 
         Button saveFile = (Button) findViewById(R.id.saveFileButton);
         saveFile.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +124,7 @@ public class IntensityActivity extends ActionBarActivity {
 
                 Gesture g = MainActivity.pd.detectHit();
 
-                Log.e("TRAINING", training + "");
+                //Log.e("TRAINING", training + "");
 
                 if (g != null && training) {
 
@@ -167,8 +176,7 @@ public class IntensityActivity extends ActionBarActivity {
 
         float sum = 0;
 
-
-        String weak, medium, strong;
+/*        String weak, medium, strong;
         weak = "t" + tag + "_" + "weak";
         medium = "t" + tag + "_" + "medium";
         strong = "t" + tag + "_" + "strong";
@@ -179,8 +187,11 @@ public class IntensityActivity extends ActionBarActivity {
 
         final TextView weakT = (TextView) findViewById(idWeak);
         final TextView mediumT = (TextView) findViewById(idMedium);
-        final TextView strongT = (TextView) findViewById(idStrong);
+        final TextView strongT = (TextView) findViewById(idStrong);*/
 
+        final TextView weakT = (TextView) findViewById(tag*100 + 0);
+        final TextView mediumT = (TextView) findViewById(tag*100 + 1);
+        final TextView strongT = (TextView) findViewById(tag*100 + 2);
 
         for (int i = 0; i < 15; i += 5) {
 
@@ -189,7 +200,7 @@ public class IntensityActivity extends ActionBarActivity {
             }
 
             final float average = sum / 5;
-            //gestureList.clear();
+            sum = 0;
 
             switch (i) {
 
@@ -197,44 +208,30 @@ public class IntensityActivity extends ActionBarActivity {
                     runOnUiThread(new Runnable() {
                         public void run() {
                             weakT.setText(average + "");
-
                         }
                     });
-                    //writeResults(average+" ");
                     break;
                 case 5:
                     runOnUiThread(new Runnable() {
                         public void run() {
                             mediumT.setText(average + "");
-
                         }
                     });
-                    //writeResults(average+" ");
                     break;
 
                 case 10:
                     runOnUiThread(new Runnable() {
                         public void run() {
                             strongT.setText(average + "");
-
                         }
                     });
-                    //writeResults(average+" ");
                     break;
-
             }
-
 
         }
 
         gestureList.clear();
         training = false;
-
-
-        //writeResults(average+" ");
-        //weakT.setText(average + "");
-
-
     }
 
 
@@ -266,27 +263,20 @@ public class IntensityActivity extends ActionBarActivity {
                 for(int x=1; x < 4; x++) {
 
                     View v = row.getChildAt(x);
-
-
                     if(v instanceof TextView){
                         TextView text = (TextView) v;
                         write += text.getText() + " ";
-
                     }
-
-
 
                 }
 
                 writeResults(write);
 
-
-
             }
-
         }
     }
 
+    //Import previous intensity training for all classes
     private void importIntensityResults(){
 
         File root = android.os.Environment.getExternalStorageDirectory();
@@ -302,7 +292,11 @@ public class IntensityActivity extends ActionBarActivity {
             String[] result;
             List<Float> resultFloats = new ArrayList<>();
 
+            int c = 0;
+
             while ((line = br.readLine()) != null) {
+
+
                 result = line.split(" ");
 
                 for(String s : result){
@@ -311,7 +305,8 @@ public class IntensityActivity extends ActionBarActivity {
 
                 }
 
-                //recognizer.loadIntensities(template, float[]);
+                //recognizer.loadIntensities(c, float[]);
+                c++;
             }
 
 
@@ -327,17 +322,12 @@ public class IntensityActivity extends ActionBarActivity {
             return;
         }
         File root = android.os.Environment.getExternalStorageDirectory();
-
-        // See http://stackoverflow.com/questions/3551821/android-write-to-sd-card-folder
-
-        File dir = new File(root.getAbsolutePath() + "/results");
+        File dir = new File(root.getAbsolutePath() + "/trainingFiles");
         Log.e("GONNA WRITE", s);
         dir.mkdirs();
         File file = new File(dir, "intensityResults.txt");
 
         try {
-
-
             FileOutputStream f = new FileOutputStream(file, true);
             PrintWriter pw = new PrintWriter(f);
             pw.append(s + "\n");
@@ -350,5 +340,69 @@ public class IntensityActivity extends ActionBarActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void buildTrainer(int numberOfClasses){
+
+        LayoutInflater li = LayoutInflater.from(this);
+        TableLayout t = (TableLayout) findViewById(R.id.table);
+
+        TextView weakT, mediumT, strongT;
+
+
+        for(int i=0; i < numberOfClasses; i++){
+
+            TableRow tr = (TableRow) li.inflate(R.layout.intensitytablerow, null);
+
+            TextView classNumber = (TextView) tr.getChildAt(0);
+            classNumber.setText(""+ i);
+
+            weakT = (TextView) tr.getChildAt(1);
+            mediumT = (TextView) tr.getChildAt(2);
+            strongT = (TextView) tr.getChildAt(3);
+
+            weakT.setId(i*100 + 0);
+            mediumT.setId(i*100 + 1);
+            strongT.setId(i*100 + 2);
+
+            Button trainButton = (Button) tr.getChildAt(4);
+            trainButton.setTag(i);
+            trainButton.setOnClickListener(getClickListener());
+
+
+            t.addView(tr);
+        }
+    }
+
+    private View.OnClickListener getClickListener(){
+
+        View.OnClickListener clickListener = new View.OnClickListener() {
+
+            @Override
+            public void onClick(final View v) {
+                //trainT0.setTag(0);
+                //recognizer.trainIntensity();
+                training = true;
+
+                thread = new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            synchronized (this) {
+                                wait();
+                            }
+                        } catch (InterruptedException ex) {
+                        }
+                        Log.e("WAKE", "");
+                        trainIntensity((int) v.getTag());
+                    }
+                };
+
+                thread.start();
+
+            }
+        };
+
+        return clickListener;
     }
 }

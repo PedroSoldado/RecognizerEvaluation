@@ -16,8 +16,12 @@ public class PureDataRecognizer {
     private List<Hit> hits;
     //Need to have a list?? -> Only a single object
     private List<Touch> touches;
+
+    //Map the gesture template number to a name
+    private HashMap<Integer, String> gestureMap;
     //Map the template to a list of 3 floats - 3 levels of intensity (weak, medium, strong)
     private HashMap<Integer, List<Float>> intensityMap;
+
     private boolean learning;
 
     private int templatesLearned;
