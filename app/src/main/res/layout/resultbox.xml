@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="150dp"
+    android:layout_marginTop="30dp"
+    android:layout_weight="1"
+    android:background="#ff4e4c4f"
+    android:gravity="center"
+    tools:showIn="@layout/activity_main">
+
+    <TextView
+
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:fontFamily="arial"
+        android:textSize="70dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Result"
+        android:id="@+id/resultText" />
+</LinearLayout>

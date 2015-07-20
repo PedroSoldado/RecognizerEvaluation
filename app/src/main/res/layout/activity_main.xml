@@ -1,190 +1,233 @@
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+
     <LinearLayout  android:layout_width="match_parent"
         android:layout_height="fill_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
         tools:context=".MainActivity" android:orientation="vertical"
-        android:background="#014347"
+        android:background="#fffffefa"
         style="@style/AppTheme">
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Gesture Training"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView2"
+                android:textSize="40dp"
+                android:textStyle="bold"
+                android:layout_marginBottom="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="2">
         <TextView android:text="Log Pure Data:\n" android:layout_width="fill_parent"
-            android:layout_height="250dp"
+            android:layout_height="fill_parent"
             android:id="@+id/textView"
-            android:background="@android:color/white"
+            android:background="@drawable/border"
             android:textColor="@android:color/black"
-            android:gravity="bottom"/>
+            android:gravity="bottom"
+            android:paddingStart="10dp" />
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="#0296A1">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1">
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:gravity="center_vertical"
-                    >
-
-                    <Button
-                        android:layout_marginLeft="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:width="150dp"
-                        android:text="On"
-                        android:onClick="bangOn"
-                        android:id="@+id/buttonOn"/>
-
-                    <Button
-                        android:layout_marginLeft="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:width="150dp"
-                        android:text="Off"
-                        android:onClick="bangOff"
-                        android:id="@+id/buttonOff"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="10dp"/>
-                </LinearLayout>
-
-            </LinearLayout>
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:baselineAligned="true"
+            >
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical">
+                android:layout_gravity="center">
 
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Intensity Training"
-                    android:id="@+id/intensityActivity"
-                    />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:layout_marginTop="20dp"
-            android:background="#0296A1">
-
-
-            <LinearLayout
-                android:layout_marginLeft="10dp"
-                android:orientation="vertical"
-                android:gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_weight="1">
                 <LinearLayout
-                    android:layout_marginLeft="10dp"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_weight="1">
+                    android:gravity="center">
 
                     <LinearLayout
                         android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="1">
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2">
 
                         <Button
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Learn Mode Off"
-                            android:id="@+id/learnOffButton" />
+                            android:width="150dp"
+                            android:text="On"
+                            android:onClick="bangOn"
+                            android:id="@+id/buttonOn"
+                            style="@style/CustomButton" />
 
                         <Button
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Learn Mode On"
-                            android:id="@+id/learnOnButton" />
+                            android:width="150dp"
+                            android:text="Off"
+                            android:onClick="bangOff"
+                            android:id="@+id/buttonOff"
+                            android:layout_alignParentStart="true"
+                            style="@style/CustomButton" />
+
                     </LinearLayout>
 
-                    <EditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:ems="10"
-                        android:id="@+id/learnCounter"
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:autoText="false"
-                        android:text="0" />
+                        android:gravity="center_vertical">
+
+                        <Button
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Import"
+                            android:id="@+id/importButton"
+                            style="@style/CustomButton" />
+                    </LinearLayout>
 
                 </LinearLayout>
-                <Button
-                    android:layout_width="275dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_height="wrap_content"
-                    android:text="Forget Template"
-                    android:id="@+id/forgetButton" />
+
             </LinearLayout>
+
+            <include
+                layout="@layout/divider" />
 
             <LinearLayout
-                android:layout_marginLeft="10dp"
                 android:orientation="vertical"
-                android:gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_weight="1">
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center">
+
 
                 <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Write Templates"
-                    android:id="@+id/writeButton" />
+                    android:text="Intensity Training"
+                    android:id="@+id/intensityActivity"
+                    style="@style/CustomButton"
+                    android:layout_width="match_parent" />
 
                 <Button
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="Read Templates"
-                    android:id="@+id/readButton" />
+                    android:text="Graphs"
+                    android:id="@+id/soundwavesButton"
+                    style="@style/CustomButton" />
             </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="#0296A1"
-            android:gravity="center">
+            android:layout_marginTop="20dp"
+            android:background="#00000000"
+            android:baselineAligned="true">
 
-            <TextView
 
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:fontFamily="arial"
-                android:textSize="70dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Result"
-                android:id="@+id/resultText" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|bottom">
+
+                    <Button
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Learn Mode On"
+                        android:id="@+id/learnOnButton"
+                        android:layout_weight="1"
+                        style="@style/CustomButton" />
+
+                    <Button
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Learn Mode Off"
+                        android:id="@+id/learnOffButton"
+                        android:layout_weight="1"
+                        style="@style/CustomButton"
+                        android:enabled="false" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical|top"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Forget Template"
+                        android:id="@+id/forgetButton"
+                        style="@style/CustomButton"
+                        android:enabled="false" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <include layout="@layout/divider" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Write Templates"
+                    android:id="@+id/writeButton"
+                    style="@style/CustomButton" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Read Templates"
+                    android:id="@+id/readButton"
+                    style="@style/CustomButton" />
+            </LinearLayout>
         </LinearLayout>
 
+        <include layout="@layout/resultbox"
+            android:layout_height="0dp"
+            android:layout_width="fill_parent"
+            android:layout_weight="1" />
+
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

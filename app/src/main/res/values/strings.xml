@@ -4,4 +4,11 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_intensity">IntensityActivity</string>
+    <string name="dialog_title">Name trained classes</string>
+    <string name="folder">/results</string>
+    <string name="namesFile">namesMapping.txt</string>
+    <string name="templatesFile">templates.txt</string>
+    <string name="intensityFile">intensityResults.txt</string>
+    <string name="title_activity_soundwaves">soundwaves</string>
+    <string name="title_activity_sound_waves">SoundWavesActivity</string>
 </resources>

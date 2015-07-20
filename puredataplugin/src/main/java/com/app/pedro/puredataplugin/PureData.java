@@ -4,16 +4,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Point;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.os.IBinder;
 import android.util.Log;
-import android.util.Pair;
 
 import org.puredata.android.io.AudioParameters;
 import org.puredata.android.service.PdService;
 import org.puredata.android.utils.PdUiDispatcher;
 import org.puredata.core.PdBase;
-import org.puredata.core.PdListener;
 import org.puredata.core.utils.IoUtils;
 import org.puredata.core.utils.PdDispatcher;
 
@@ -29,15 +28,6 @@ import java.util.List;
  */
 public class PureData {
 
-    public static PureData pdInstance;
-    private List<Hit> hits;
-    //Need to have a list?? -> Only a single object
-    private List<Touch> touches;
-    //Map the template to a list of 3 floats - 3 levels of intensity (weak, medium, strong)
-    private HashMap<Integer, List<Float>> intensityMap;
-    private boolean learning;
-
-
     private InputStream stream;
     private Context appContext;
     private int handlePatch;
@@ -50,15 +40,8 @@ public class PureData {
     public PureData(Context c) {
 
         try {
-            myDispatcher = new PdUiDispatcher() {
-                //@Override
-                //public void print(String s) { Log.e("Pd print", s);}
-            };
 
-            hits = new ArrayList<>();
-            touches = new ArrayList<>();
-            learning = false;
-
+            myDispatcher = new PdUiDispatcher();
             handlePatch = 0;
             pdService = null;
             stream = c.getResources().getAssets().open("test.zip");
@@ -66,8 +49,6 @@ public class PureData {
             saveFile = c.getFilesDir();
 
             startService();
-
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -89,19 +70,11 @@ public class PureData {
             public void onServiceDisconnected(ComponentName name) {
             /*Never called*/
             }
-
-
         };
 
         boolean bound = appContext.bindService(new Intent(appContext, PdService.class), pdConnection, appContext.BIND_AUTO_CREATE);
-
         return bound;
-
     }
-
-    private void loadPatch() { /* Needed to clean code up maybe??*/}
-
-
 
     public void initPd() {
 
@@ -109,12 +82,6 @@ public class PureData {
         startAudio();
 
     }
-
-    private List sendResult(List result) {
-
-        return result;
-    }
-
 
     private void startAudio() {
 
@@ -189,7 +156,6 @@ public class PureData {
         }
     }
 
-
     public void sendFloat(String receiver, String number) {
         float value = Float.parseFloat(number);
         PdBase.sendFloat(receiver, value);
@@ -201,117 +167,13 @@ public class PureData {
         PdBase.sendBang(receiver);
     }
 
-    public void writeTemplates() {
-        sendBang("writeTemplates");
-    }
+    public float[] getArray(String bang, String sourceArray){
 
-    public void startLearning(){
-        sendBang("learnOn");
-        learning = true;
-    }
+        float[] data = new float[512];
+        //PdBase.sendBang(bang);
+        PdBase.readArray(data, 0, sourceArray, 0, 512);
 
-    public void stopLearning(){
-        sendBang("learnOff");
-        learning = false;
-    }
-
-    public void forgetTemplate(){
-        sendBang("forgetTemplate");
-    }
-
-    public void readTemplates() {
-        sendBang("readTemplates");
-    }
-
-
-
-    public String debugLog(String logLine) {
-
-        return logLine;
-
-    }
-
-    public void addTouch(int x, int y) {
-
-        Touch touch = new Touch(x,y);
-        touches.add(touch);
-    }
-
-    public void addHit(float instrument, float velocity, float color, float intensity) {
-
-        Hit hit = new Hit(instrument,velocity,color, intensity);
-
-        if(hits.size() > 9)
-            hits.clear();
-
-        hits.add(hit);
-    }
-
-    //Detect a hit on the screen, by comparing the touch with recorder hit timestamps
-    public Gesture detectHit() {
-
-        Gesture gesture;
-
-        //Log.e("TOUCHES", "" + (touches.size()-1));
-        //Log.e("HITS", "" + (hits.size()-1));
-
-        if(touches.isEmpty()) {
-            return null;
-        }
-
-        Touch t = touches.remove(touches.size() - 1);
-        Hit h = hits.remove(hits.size()-1);
-
-        long touchTs = t.getTimestamp();
-        long hitTs = h.getTimestamp();
-
-        if(hitTs <= touchTs + 200 && hitTs >= touchTs ){
-
-            Log.e("Detected Hit!", "At " + hitTs + " " + touchTs);
-            gesture = new Gesture(t, h);
-            return gesture;
-        }
-
-        return null;
-
-    }
-
-
-    public void debugTouchList() {
-        Log.e("Size of Touch List", "" + touches.size());
-        for(Touch t: touches) {
-            Log.e("Coordinates:", "X:" + t.getLocation().first + "Y: " + t.getLocation().second);
-        }
-    }
-
-    public void debugHitList(){
-
-        Log.e("Size of Hit List", "" + hits.size());
-        /*for(Hit h: hits) {
-            Log.e("Hit: ", " " + h.getTemplate() + " " + h.getIntensity() + " " + h.getTimestamp());
-        }*/
-    }
-
-    public String getResult(int template, float  velocity) {
-
-        String result;
-
-        switch(template){
-            case 0: result = "TAP";
-                break;
-            case 1: result = "KNOCK"; break;
-            case 2: result = "SLAP"; break;
-            case 3: result = "PUNCH"; break;
-            default: result = "NOT RECOGNIZED";
-        }
-
-        result += " " + velocity;
-
-        return result;
-    }
-
-    public boolean isLearning() {
-        return learning;
+        return data;
     }
 
     public PdDispatcher getMyDispatcher(){

@@ -1,8 +1,7 @@
 package com.app.pedro.recognizerevaluation;
 
-import android.content.Context;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,8 +14,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.app.pedro.puredataplugin.Gesture;
-import com.app.pedro.puredataplugin.PureData;
-import com.app.pedro.puredataplugin.PureDataRecognizer;
 
 import org.puredata.core.PdListener;
 
@@ -26,17 +23,17 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class IntensityActivity extends ActionBarActivity {
 
     private Thread thread;
-    List<Gesture> gestureList;
-    boolean training;
+    private List<Gesture> gestureList;
+    private boolean training;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,90 +43,56 @@ public class IntensityActivity extends ActionBarActivity {
         training = false;
         gestureList = new ArrayList<>();
 
-        //buildTrainer(recognizer.templatesNumber);
-/*        LayoutInflater li = LayoutInflater.from(this);
-        TableRow tr = (TableRow) li.inflate(R.layout.intensitytablerow, null );
+        buildTrainer(MainActivity.recognizer.getTemplatesNumber());
 
-        TableLayout t = (TableLayout) findViewById(R.id.table);
-        t.addView(tr);*/
-
-        buildTrainer(4);
-        View.OnClickListener clickListener = new View.OnClickListener() {
-
+        Button importFromFile = (Button) findViewById(R.id.importButton);
+        importFromFile.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(final View v) {
-                //trainT0.setTag(0);
-                //recognizer.trainIntensity();
-                training = true;
+            public void onClick(View v) {
 
-                thread = new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            synchronized (this) {
-                                wait();
-                            }
-                        } catch (InterruptedException ex) {
-                        }
-                        Log.e("WAKE", "");
-                        trainIntensity((int) v.getTag());
-                    }
-                };
-
-                thread.start();
-
+                importIntensityResults();
             }
-        };
-
+        });
 
         Button saveFile = (Button) findViewById(R.id.saveFileButton);
         saveFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                //PureDataRecognizer recognizer = new PureDataRecognizer(getApplicationContext());
-                //Log.e("RECOGNIZER", recognizer.compareIntensity(0, 150.43f));
+                Log.e("AQUI", "");
                 saveFile();
             }
 
         });
 
+        createListener();
+    }
 
-
-
-        Button trainT0 = (Button) findViewById(R.id.buttonT0);
-        trainT0.setTag(0);
-        trainT0.setOnClickListener(clickListener);
-
-        Button trainT1 = (Button) findViewById(R.id.buttonT1);
-        trainT1.setTag(1);
-        trainT1.setOnClickListener(clickListener);
-
-
+    private void createListener() {
         MainActivity.pd.getMyDispatcher().addListener("bonk-cooked", new PdListener.Adapter() {
             @Override
             public void receiveList(String source, Object... objects) {
-                String result, bonkOutput;
 
                 int template = (int) Double.parseDouble(objects[0].toString());
                 float velocity = Float.parseFloat(objects[1].toString());
                 float colorTemperature = Float.parseFloat(objects[2].toString());
+                float vsnapValue = Float.parseFloat(objects[3].toString());
 
-                //Intensity
-                float hitIntensity = Float.parseFloat(objects[3].toString());
-                //Log.e("INT", hitIntensity+"");
+                MainActivity.recognizer.addHit(template, velocity, colorTemperature, vsnapValue);
 
-                MainActivity.pd.addHit(template, velocity, colorTemperature, hitIntensity);
+                Gesture g = MainActivity.recognizer.detectHit();
 
+                if (g != null) {
 
-                Gesture g = MainActivity.pd.detectHit();
+                    if (training) {
+                        gestureList.add(g);
+                        Log.e("SIZE", gestureList.size() + "");
+                    }
 
-                //Log.e("TRAINING", training + "");
+                    TextView resultLabel = (TextView) findViewById(R.id.resultText);
+                    String result = MainActivity.recognizer.getResult(template, velocity);
 
-                if (g != null && training) {
-
-                    gestureList.add(g);
-                    Log.e("SIZE", gestureList.size() + "");
+                    resultLabel.setText(result);
                 }
 
                 if (gestureList.size() == 15) {
@@ -141,6 +104,13 @@ public class IntensityActivity extends ActionBarActivity {
             }
 
         });
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        createListener();
     }
 
 
@@ -166,32 +136,17 @@ public class IntensityActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //Train intensity for the given template
+    public void trainIntensity(int template) {
 
-    public void trainIntensity(int tag) {
-
-        Log.e("YEEEEEEEEEEEEEEEES", gestureList.size() + "");
+        Log.e("TRAINING NOW", gestureList.size() + "");
         //int nTemplates = recognizer.getTemplates();
-        int nTemplates = 2;
-        List<Float> samples = new ArrayList<Float>();
 
         float sum = 0;
 
-/*        String weak, medium, strong;
-        weak = "t" + tag + "_" + "weak";
-        medium = "t" + tag + "_" + "medium";
-        strong = "t" + tag + "_" + "strong";
-
-        int idWeak = getResources().getIdentifier(weak, "id", this.getPackageName());
-        int idMedium = getResources().getIdentifier(medium, "id", this.getPackageName());
-        int idStrong = getResources().getIdentifier(strong, "id", this.getPackageName());
-
-        final TextView weakT = (TextView) findViewById(idWeak);
-        final TextView mediumT = (TextView) findViewById(idMedium);
-        final TextView strongT = (TextView) findViewById(idStrong);*/
-
-        final TextView weakT = (TextView) findViewById(tag*100 + 0);
-        final TextView mediumT = (TextView) findViewById(tag*100 + 1);
-        final TextView strongT = (TextView) findViewById(tag*100 + 2);
+        final TextView weakT = (TextView) findViewById(template*100 + 0);
+        final TextView mediumT = (TextView) findViewById(template * 100 + 1);
+        final TextView strongT = (TextView) findViewById(template * 100 + 2);
 
         for (int i = 0; i < 15; i += 5) {
 
@@ -240,8 +195,8 @@ public class IntensityActivity extends ActionBarActivity {
         int y = (int) event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                //Log.e("TOUCH Dispatch! on ", " " + x + y);
-                MainActivity.pd.addTouch(x, y);
+
+                MainActivity.recognizer.addTouch(x, y);
 
                 break;
         }
@@ -250,41 +205,65 @@ public class IntensityActivity extends ActionBarActivity {
     }
 
     private void saveFile(){
+
         TableLayout table = (TableLayout) findViewById(R.id.table);
+        List<String> results = new ArrayList<>();
+
+
+        String write;
 
         for(int i=0; i < table.getChildCount(); i++)
         {
-            View view = table.getChildAt(i);
+            //0 is header row
+            View view = table.getChildAt(i+1);
+
             if (view instanceof TableRow) {
 
                 TableRow row = (TableRow) view;
 
-                String write = "";
-                for(int x=1; x < 4; x++) {
+                write = i + " ";
+
+                loop:
+                for(int x=1 ; x < 4; x++) {
 
                     View v = row.getChildAt(x);
+
                     if(v instanceof TextView){
                         TextView text = (TextView) v;
+
+                        if(text.getText().equals("NA")) {
+                            write = "";
+                            break loop;
+                        }
+
+
                         write += text.getText() + " ";
                     }
 
                 }
 
-                writeResults(write);
+                Log.e("AQUII", write);
+                results.add(write);
+
+
+
 
             }
         }
+
+        Log.e("HGERE", "SSDDS");
+
+        writeResults(results);
     }
 
-    //Import previous intensity training for all classes
+    /**
+     * Import previous intensity training for all classes on the file
+     */
     private void importIntensityResults(){
 
         File root = android.os.Environment.getExternalStorageDirectory();
-
-        // See http://stackoverflow.com/questions/3551821/android-write-to-sd-card-folder
-
-        File dir = new File(root.getAbsolutePath() + "/results");
-        File file = new File(dir, "intensityResults.txt");
+        File dir = new File(root.getAbsolutePath() + getString(R.string.folder));
+        File file = new File(dir, getString(R.string.intensityFile));
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 
@@ -292,46 +271,82 @@ public class IntensityActivity extends ActionBarActivity {
             String[] result;
             List<Float> resultFloats = new ArrayList<>();
 
-            int c = 0;
+            int template;
 
             while ((line = br.readLine()) != null) {
 
-
                 result = line.split(" ");
 
-                for(String s : result){
-                    float res = Float.parseFloat(s);
+                template = Integer.parseInt(result[0]);
+                TableRow row = getTableRow(template);
+                if(row == null)
+                    return;
+
+                for(int i = 1; i < result.length; i++){
+
+                    float res = Float.parseFloat(result[i]);
                     resultFloats.add(res);
 
                 }
 
-                //recognizer.loadIntensities(c, float[]);
-                c++;
+                TextView weakT = (TextView) row.getChildAt(1);
+                TextView mediumT = (TextView) row.getChildAt(2);
+                TextView strongT = (TextView) row.getChildAt(3);
+
+                weakT.setText(resultFloats.get(0).toString());
+                mediumT.setText(resultFloats.get(1).toString());
+                strongT.setText(resultFloats.get(2).toString());
+
+                MainActivity.recognizer.loadIntensities(template, resultFloats);
+
+                resultFloats.clear();
             }
-
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void writeResults(String s) {
+    private TableRow getTableRow(int template){
 
-        if(s == ""){
-            return;
+        TableLayout table = (TableLayout) findViewById(R.id.table);
+
+        for(int i = 1 ; i < table.getChildCount() + 1 ; i++) {
+            View view = table.getChildAt(i);
+
+            if(view == null)
+                return null;
+
+            if (view instanceof TableRow) {
+
+                TableRow row = (TableRow) view;
+
+                if((int)row.getTag() == template){
+                    Log.e("RIGHT", ((TextView)row.getChildAt(0)).getText().toString());
+                    return row;
+                }
+            }
         }
+
+        return null;
+    }
+
+    private void writeResults(List<String> results) {
+
         File root = android.os.Environment.getExternalStorageDirectory();
-        File dir = new File(root.getAbsolutePath() + "/trainingFiles");
-        Log.e("GONNA WRITE", s);
+        File dir = new File(root.getAbsolutePath() + getString(R.string.folder));
         dir.mkdirs();
-        File file = new File(dir, "intensityResults.txt");
+        File file = new File(dir, getString(R.string.intensityFile));
 
         try {
-            FileOutputStream f = new FileOutputStream(file, true);
+            FileOutputStream f = new FileOutputStream(file, false);
             PrintWriter pw = new PrintWriter(f);
-            pw.append(s + "\n");
-            pw.flush();
+
+            for(String s : results) {
+                if(s.equals(""))
+                    continue;
+                pw.append(s + "\n");
+                pw.flush();
+            }
             pw.close();
             f.close();
 
@@ -344,32 +359,34 @@ public class IntensityActivity extends ActionBarActivity {
 
     private void buildTrainer(int numberOfClasses){
 
+        HashMap<Integer, String> nameMap = MainActivity.recognizer.getNames();
+
         LayoutInflater li = LayoutInflater.from(this);
         TableLayout t = (TableLayout) findViewById(R.id.table);
 
-        TextView weakT, mediumT, strongT;
-
+        TextView weakTextbox, mediumTextbox, strongTextbox;
 
         for(int i=0; i < numberOfClasses; i++){
 
             TableRow tr = (TableRow) li.inflate(R.layout.intensitytablerow, null);
 
             TextView classNumber = (TextView) tr.getChildAt(0);
-            classNumber.setText(""+ i);
+            classNumber.setText(i + "\t" + nameMap.get(i));
 
-            weakT = (TextView) tr.getChildAt(1);
-            mediumT = (TextView) tr.getChildAt(2);
-            strongT = (TextView) tr.getChildAt(3);
+            weakTextbox = (TextView) tr.getChildAt(1);
+            mediumTextbox = (TextView) tr.getChildAt(2);
+            strongTextbox = (TextView) tr.getChildAt(3);
 
-            weakT.setId(i*100 + 0);
-            mediumT.setId(i*100 + 1);
-            strongT.setId(i*100 + 2);
+            weakTextbox.setId(i * 100 + 0);
+            mediumTextbox.setId(i * 100 + 1);
+            strongTextbox.setId(i * 100 + 2);
 
             Button trainButton = (Button) tr.getChildAt(4);
+
             trainButton.setTag(i);
             trainButton.setOnClickListener(getClickListener());
 
-
+            tr.setTag(i);
             t.addView(tr);
         }
     }
@@ -380,8 +397,6 @@ public class IntensityActivity extends ActionBarActivity {
 
             @Override
             public void onClick(final View v) {
-                //trainT0.setTag(0);
-                //recognizer.trainIntensity();
                 training = true;
 
                 thread = new Thread() {
@@ -405,4 +420,7 @@ public class IntensityActivity extends ActionBarActivity {
 
         return clickListener;
     }
+
+
+
 }

@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.pedro.recognizerevaluation" >
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
+    </uses-permission>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,7 +13,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="stateHidden|adjustResize" >
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,14 +23,16 @@
         <activity
             android:name=".IntensityActivity"
             android:label="@string/title_activity_intensity"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.app.pedro.recognizerevaluation.MainActivity" />
         </activity>
+        <activity
+            android:name=".SoundWavesActivity"
+            android:label="@string/title_activity_sound_waves" >
+        </activity>
     </application>
-
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
-    </uses-permission>
 
 </manifest>
