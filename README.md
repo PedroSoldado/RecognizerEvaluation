@@ -31,13 +31,13 @@ b) On the onCreate method, at the end add the following lines:
 These lines initiate the capturing process and retrieve information of the sound events.
 
 c) Create a folder on the device, and add the 3 files:
-        File root = android.os.Environment.getExternalStorageDirectory();
-        File dir = new File(root.getAbsolutePath() + "/results");
-        File namesFile = new File(dir, "namesMapping.txt");
-        File templateFile = new File(dir, "templates.txt");
-        File intensityFile = new File(dir, "intensityResults.txt");
-        
-        recognizer.importFiles(namesFile, templateFile, intensityFile);
+          File root = android.os.Environment.getExternalStorageDirectory();
+          File dir = new File(root.getAbsolutePath() + "/results");
+          File namesFile = new File(dir, "namesMapping.txt");
+          File templateFile = new File(dir, "templates.txt");
+          File intensityFile = new File(dir, "intensityResults.txt");
+          
+          recognizer.importFiles(namesFile, templateFile, intensityFile);
 
 d) To register a touch event to be detected, add the following line to the dispatchTouchEvent method (or to another touch event handler):
 
