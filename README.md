@@ -31,6 +31,7 @@ b) On the onCreate method, at the end add the following lines:
 These lines initiate the capturing process and retrieve information of the sound events.
 
 c) Create a folder on the device, and add the 3 files:
+
           File root = android.os.Environment.getExternalStorageDirectory();
           File dir = new File(root.getAbsolutePath() + "/results");
           File namesFile = new File(dir, "namesMapping.txt");
