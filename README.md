@@ -46,7 +46,7 @@ d) To register a touch event to be detected, add the following line to the dispa
             recognizer.addTouch((int) event.getX(), (int) event.getY());
         }
 
-3. Now the toolkit is already receiving sound events and touch events.
+Now the toolkit is already receiving sound events and touch events.
 After receiving the touch event, on the touch event handler, it is possible to receive the detected gesture and map it to a feature/method:
 
 		String gesture = recognizer.getGesture();
